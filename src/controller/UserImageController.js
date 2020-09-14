@@ -9,21 +9,16 @@ class UserImageController {
 
     async store(req, res) {
 
-        const { email } = req.body;
+        const user =  req.userId
 
         const { originalname: name, filename: key_name } = req.file;
 
-        const user = await User.findOne({
-            where:
-                { email },
-            include: { association: "userimage", attributes: ["user_id"] }
-
-        });
 
         if (!user){
             fs_unlink(key_name);
             return res.status(400).send({ erro: "Usuario não encontrado" });
         } 
+        
 
         if (user.userimage.length > 0){
             fs_unlink(key_name);

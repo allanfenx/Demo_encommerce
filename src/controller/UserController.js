@@ -49,7 +49,7 @@ class UserController {
 
         if (!await bcrypt.compare(password, user.password)) return res.status(405).send({ erro: "Inválid password" });
 
-        const token = jwt.sign({ id: user.id, role: user.role }, Auth.secret, {
+        const token = jwt.sign({ id: user.id, role: user.role, name: user.name }, Auth.secret, {
             expiresIn: 900000
         });
 

@@ -1,17 +1,17 @@
 const express = require('express');
 const AndressController = require('../controller/AndressController');
-const sign_in = require('../config/sign_in');
+const sign_in = require('../config/midleware/sign_in');
 
 const router = express.Router();
 
 router.use(sign_in);
 
-router.post("/user", AndressController.store);
+router.post("/andress/user", AndressController.store);
 
-router.put("/user", AndressController.update);
+router.put("/andress/user", AndressController.update);
 
-router.get("/user/:id", AndressController.show);
+router.get("/andress/user/:id", AndressController.show);
 
-router.delete("/user", AndressController.destroy);
+router.delete("/andress/user", AndressController.destroy);
 
 module.exports = router;

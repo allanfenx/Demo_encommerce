@@ -1,11 +1,14 @@
 const ProductController = require('../controller/ProductController');
 const express = require('express');
+const adminsign_in = require('../config/midleware/adminsign_in');
 
 const router = express.Router();
 
 router.get("/product", ProductController.index);
 
 router.get("product/:id", ProductController.show);
+
+router.use(adminsign_in);
 
 router.post("/product", ProductController.store);
 
