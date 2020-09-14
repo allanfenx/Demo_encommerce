@@ -1,14 +1,11 @@
-const express = require('express');
 const ProductController = require('../controller/ProductController');
-const sign_in = require('../config/sign_in');
+const express = require('express');
 
 const router = express.Router();
 
 router.get("/product", ProductController.index);
 
-router.get("/product/:id", ProductController.show);
-
-router.use(sign_in);
+router.get("product/:id", ProductController.show);
 
 router.post("/product", ProductController.store);
 
