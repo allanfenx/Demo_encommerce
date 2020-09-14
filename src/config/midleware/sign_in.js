@@ -3,7 +3,7 @@ const AuuthConfig = require('../Auth.json');
 
 module.exports = (req, res, next) => {
 
-    const token = req.headers.authozation;
+    const token = req.headers.authorization;
 
     jwt.verify(token, AuuthConfig.secret, (err, decode)=> {
 

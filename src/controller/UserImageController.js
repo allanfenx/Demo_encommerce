@@ -9,18 +9,22 @@ class UserImageController {
 
     async store(req, res) {
 
-        const user =  req.userId
+        var userId = req.userId
 
         const { originalname: name, filename: key_name } = req.file;
 
+        const user = await User.findOne({
+            where: { userId },
+            include: { association: "userimage" }
+        });
 
-        if (!user){
+        if (!user) {
             fs_unlink(key_name);
             return res.status(400).send({ erro: "Usuario não encontrado" });
-        } 
-        
+        }
 
-        if (user.userimage.length > 0){
+
+        if (user.userimage.length > 0) {
             fs_unlink(key_name);
             return res.status(405).send({ erro: "Só é permitido uma imagem por usuario" });
         }
@@ -51,7 +55,7 @@ class UserImageController {
         const image = await UserImage.findByPk(id);
 
         if (!image) return res.status(400).send({ erro: "Imagem do usuario não encontrado" });
-        
+
 
         const trx = await connection.transaction();
 

@@ -6,14 +6,14 @@ const router = express.Router();
 
 router.use(adminsign_in);
 
-router.get("/admin/user", UserController.index);
+router.get("/user", UserController.index);
 
-router.post("/admin/user", UserController.store);
+router.post("/user", UserController.store);
 
-router.get("/admin/user/:id", UserController.show);
+router.get("/user/:id", UserController.show);
 
-router.put("/admin/user", UserController.update);
+router.put("/user", UserController.update);
 
-router.delete("/admin/user", UserController.destroy);
+router.delete("/user", UserController.destroy);
 
 module.exports = router;

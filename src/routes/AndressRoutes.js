@@ -6,12 +6,12 @@ const router = express.Router();
 
 router.use(sign_in);
 
-router.post("/andress/user", AndressController.store);
+router.post("/user", AndressController.store);
 
-router.put("/andress/user", AndressController.update);
+router.put("/user", AndressController.update);
 
-router.get("/andress/user/:id", AndressController.show);
+router.get("/user/:id", AndressController.show);
 
-router.delete("/andress/user", AndressController.destroy);
+router.delete("/user", AndressController.destroy);
 
 module.exports = router;

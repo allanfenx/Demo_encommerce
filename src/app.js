@@ -18,9 +18,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 
-app.use("/", AdminUserRoutes);
-app.use("/", AndressRoutes);
-app.use("/", UserImageRoutes);
+app.use("/admin", AdminUserRoutes);
+app.use("/andress", AndressRoutes);
+app.use("/image", UserImageRoutes);
 app.use("/", UserRoutes);
 app.use("/", CategoryRoutes);
 app.use("/", ProductRoutes);

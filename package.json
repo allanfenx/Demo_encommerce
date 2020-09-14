@@ -5,6 +5,7 @@
   "main": "app",
   "scripts": {
     "dev": "npx nodemon src/app",
+    "start": "node src/app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Allan Fenx",
