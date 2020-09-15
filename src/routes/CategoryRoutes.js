@@ -1,5 +1,6 @@
 const express = require('express');
 const CategoryController = require('../controller/CategoryController');
+const adminsign_in = require('../config/midleware/adminsign_in');
 
 const router = express.Router();
 
@@ -7,6 +8,7 @@ router.get("/category", CategoryController.index);
 
 router.get("/category/:id", CategoryController.show);
 
+router.use(adminsign_in);
 
 router.post("/category", CategoryController.store);
 

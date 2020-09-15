@@ -1,5 +1,4 @@
 const UserImage = require('../models/UserImage');
-const User = require('../models/User');
 const connection = require('../database/connection');
 const fs_unlink = require('../config/fs_unlink');
 
@@ -9,22 +8,18 @@ class UserImageController {
 
     async store(req, res) {
 
-        const {email} = req.body;
+        const user = req.userID
 
         const { originalname: name, filename: key_name } = req.file;
-
-        const user = await User.findOne({
-            where: { email },
-            include: { association: "userimage" }
-        });
 
         if (!user) {
             fs_unlink(key_name);
             return res.status(400).send({ erro: "Usuario não encontrado" });
         }
 
+        var image = await UserImage.findAll({ where: { user_id: user } });
 
-        if (user.userimage.length > 0) {
+        if (image.length > 0) {
             fs_unlink(key_name);
             return res.status(405).send({ erro: "Só é permitido uma imagem por usuario" });
         }
@@ -33,11 +28,11 @@ class UserImageController {
 
         try {
 
-            const image = await UserImage.create({ name, key_name, user_id: user.id });
+            image = await UserImage.create({ name, key_name, user_id: user });
 
             await trx.commit();
 
-            return res.send({id: req.userID, name: req.name, image});
+            return res.send({ id: req.userID, name: req.name, image });
         } catch (error) {
 
             await trx.rollback();
