@@ -1,10 +1,8 @@
 const express = require('express');
 const AndressController = require('../controller/AndressController');
-const sign_in = require('../config/midleware/sign_in');
 
 const router = express.Router();
 
-router.use(sign_in);
 
 router.post("/user", AndressController.store);
 

@@ -9,12 +9,12 @@ class UserImageController {
 
     async store(req, res) {
 
-        var userId = req.userId
+        const {email} = req.body;
 
         const { originalname: name, filename: key_name } = req.file;
 
         const user = await User.findOne({
-            where: { userId },
+            where: { email },
             include: { association: "userimage" }
         });
 
@@ -37,7 +37,7 @@ class UserImageController {
 
             await trx.commit();
 
-            return res.send(image);
+            return res.send({id: req.userID, name: req.name, image});
         } catch (error) {
 
             await trx.rollback();

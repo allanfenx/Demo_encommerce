@@ -1,17 +1,20 @@
 const jwt = require('jsonwebtoken');
-const AuuthConfig = require('../Auth.json');
+const Auth = require('../Auth.json');
 
 module.exports = (req, res, next) => {
 
-    const token = req.headers.authorization;
+    const token  = req.headers.authorization;
 
-    jwt.verify(token, AuuthConfig.secret, (err, decode)=> {
+    jwt.verify(token, Auth.secret, (err, decoded) => {
 
-        if(err) return res.status(401).send({erro: "Token iválido"});
+        if (err) return res.status(405).send({ erro: "Invalid token" });
 
-        req.userId = decode.id;
-        req.role = decode.role;
-        req.name = decode.name;
+        req.userID = decoded.id;
+        req.role = decoded.role;
+        req.name = decoded.name;
+
+
+
         return next();
-    });
+    })
 }

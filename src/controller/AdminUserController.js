@@ -12,7 +12,7 @@ class UserController {
 
         });
 
-        return res.send({user: req.user_id, cargo: req.role, users})
+        return res.send({id: req.userID, name: req.name, role: req.role, users})
     }
 
     async store(req, res) {

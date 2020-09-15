@@ -35,7 +35,7 @@ class UserController {
 
             await trx.rollback();
 
-            return res.status(400).send({ erro: "Houve um erro ao fazer cadastro tente outra vez"});
+            return res.status(400).send({ erro: "Houve um erro ao fazer cadastro tente outra vez" });
         }
     }
 
@@ -45,17 +45,18 @@ class UserController {
 
         const user = await User.findOne({ where: { email } });
 
-        if (!user) return res.status(400).send({ erro: "Usuario nao encontrado" });
+        if (!user) return res.status(400).sen({ erro: "User not found" });
 
-        if (!await bcrypt.compare(password, user.password)) return res.status(405).send({ erro: "Inválid password" });
+        if (!await bcrypt.compare(password, user.password))
+            return res.status(400).send({ erro: "Ivalid password" });
 
         const token = jwt.sign({ id: user.id, role: user.role, name: user.name }, Auth.secret, {
-            expiresIn: 900000
+            expiresIn: 6000
         });
 
         user.password = undefined;
 
-        return res.send({ user, token });
+        return res.send({user, token});
     }
 
     async forgotPassword(req, res) {
@@ -93,7 +94,7 @@ class UserController {
 
                 if (err) return res.status(400).send({ erro: "Cannot send forgot password email" });
 
-                return res.send({token} );
+                return res.send({ token });
             });
 
             await trx.commit();

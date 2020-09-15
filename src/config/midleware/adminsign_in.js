@@ -1,21 +1,31 @@
 const jwt = require('jsonwebtoken');
-const AuuthConfig = require('../Auth.json');
+const Auth = require('../Auth.json');
 
 module.exports = (req, res, next) => {
 
-    const token = req.body;
-    //const token = req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
-    jwt.verify(token, AuuthConfig.secret, (err, decode)=> {
+    if (!authHeader) return res.status(401).send({ erro: "No token provided" });
 
-        if(err) return res.status(401).send({erro: "Token iválido"});
+    const parts = authHeader.split(' ');
 
-        req.userId = decode.id;
-        req.role = decode.role;
-        req.name = decode.name;
+    if (!parts.length === 2) return res.status(401).send({ erro: "Token error" });
 
-        if(req.role !== "admin") return res.status(405).send({erro: "Não autorizado"});
+    const [schema, token] = parts;
+
+    if(!/^Bearer$/i.test(schema)) return res.status(401).send({ erro: "Token malformatted" });
+
+    jwt.verify(token, Auth.secret, (err, decoded) => {
+
+        if (err) return res.status(401).send({ erro: "Invalid token" });
+
+        req.userID = decoded.id;
+        req.role = decoded.role;
+        req.name = decoded.name;
+
+
+        if (req.role !== "admin") return res.status(401).send({ erro: "Permission denied" });
 
         return next();
-    });
+    })
 }

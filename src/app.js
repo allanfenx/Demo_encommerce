@@ -12,7 +12,7 @@ const ProductImageRoutes = require('./routes/ProductImageRoutes');
 require('./database/connection');
 
 const app = express();
-const Port = 8081;
+const Port = 8080;
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());

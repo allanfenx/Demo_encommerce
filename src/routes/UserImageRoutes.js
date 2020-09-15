@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.use(sign_in);
 
-router.post("/user", multer(multerConfig).single('file') ,UserImageController.store);
+router.post("/user", multer(multerConfig).single('file'), UserImageController.store);
 
 router.delete("/user", UserImageController.destroy);
 
