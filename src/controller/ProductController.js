@@ -2,6 +2,7 @@ const Product = require('../models/Product');
 const Category = require('../models/Category');
 const connection = require('../database/connection');
 const slugify = require('slugify');
+const validador = require('../validate/validator');
 
 class ProductController {
 
@@ -26,6 +27,15 @@ class ProductController {
         var product = await Product.findOne({ where: { name } });
 
         if (product) return res.status(405).send({ erro: "Não é permitido produtos com o mesmo nome" });
+
+        var contract = new validador();
+
+        contract.isRequired(name, 'Name is required');
+        contract.isRequired(description, 'Description is required');
+        contract.isRequired(price, 'Price is required');
+        contract.isRequired(stock, 'Stock is required');
+
+        if (!contract.isValid()) return res.status(400).send(contract.errors());
 
         const trx = await connection.transaction();
 
@@ -53,17 +63,17 @@ class ProductController {
     }
 
     async show(req, res) {
-       
-        const { id} = req.params;
 
-        const product = await Product.findByPk(id, {include: {association: "productimage"}});
+        const { id } = req.params;
 
-        return res.send({product});
+        const product = await Product.findByPk(id, { include: { association: "productimage" } });
+
+        return res.send({ product });
     }
 
-    async update(req, res){
+    async update(req, res) {
 
-        const {id, title, name, description, price, stock } = req.body;
+        const { id, title, description, price, stock } = req.body;
 
         const category = await Category.findOne({
             where: { title },
@@ -72,20 +82,28 @@ class ProductController {
 
         if (!category) return res.status(400).send({ erro: "Categoria não encontrada" })
 
-        var product = await Product.findOne({ where: { name } });
+        var product = await Product.findByPk(id);
+
+        if (!product) return res.status(400).send({ erro: "Product not found" })
+
+        var contract = new validador();
+
+        contract.isRequired(description, 'Description is required');
+        contract.isRequired(price, 'Price is required');
+        contract.isRequired(stock, 'Stock is required');
+
+        if (!contract.isValid()) return res.status(400).send(contract.errors());
 
         const trx = await connection.transaction();
 
         try {
 
             product = await Product.update({
-                name,
                 description,
                 price,
                 stock,
-                slug: slugify(name),
                 category_id: category.id
-            }, {where: {id}});
+            }, { where: { id } });
 
             await trx.commit();
 
@@ -99,28 +117,28 @@ class ProductController {
         }
     }
 
-    async destroy(req, res){
+    async destroy(req, res) {
 
-        const {name} = req.body;
+        const { name } = req.body;
 
-        const product = await Product.findOne({where: {name}});
+        const product = await Product.findOne({ where: { name } });
 
-        if(!product) return res.status(400).send({erro: "Produto não encontrado"});
+        if (!product) return res.status(400).send({ erro: "Produto não encontrado" });
 
         const trx = await connection.transaction();
 
         try {
-            
+
             await product.destroy();
 
             await trx.commit();
 
             return res.send();
         } catch (error) {
-            
+
             await trx.rollback();
 
-            return res.status(400).send({erro: "Houve um erro ao excluir produto"});
+            return res.status(400).send({ erro: "Houve um erro ao excluir produto" });
         }
     }
 

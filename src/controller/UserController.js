@@ -3,6 +3,7 @@ const RecoverPassword = require('../models/RecoverPassword');
 const connection = require('../database/connection');
 const Auth = require('../config/Auth.json');
 const mailer = require('../config/NodeMailer');
+const validator = require('../validate/validator');
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -12,11 +13,20 @@ class UserController {
 
     async store(req, res) {
 
+        const contract = new validator();
+
         const { name, email, password, repeat_password } = req.body;
 
         var user = await User.findOne({ where: { email } });
 
         if (user) return res.status(405).send({ erro: "Já existe um usuario cadastrado com este email" });
+
+        contract.hasMinLen(name, 5, 'the name must contain at least 5 characters');
+        contract.isEmail(email, 'Valid email required');
+        contract.hasMinLen(password, 6, 'the password must contain at least 5 characters');
+        contract.passwordCompare(password, repeat_password, 'Password confirmation required');
+
+        if(!contract.isValid()) return res.status(400).send(contract.errors());
 
         const trx = await connection.transaction();
 
@@ -56,7 +66,7 @@ class UserController {
 
         user.password = undefined;
 
-        return res.send({user, token});
+        return res.send({ user, token });
     }
 
     async forgotPassword(req, res) {

@@ -1,5 +1,8 @@
 const User = require('../models/User');
 const connection = require('../database/connection');
+const validador = require('../validate/validator');
+const contract = new validador();
+
 const bcrypt = require('bcryptjs');
 
 class UserController {
@@ -24,6 +27,12 @@ class UserController {
 
         if(user) return res.status(405).send({erro: "Já existe um usuario cadastrado com este email"})
 
+        contract.hasMinLen(name, 5, 'the name must contain at least 5 characters');
+        contract.isEmail(email, 'Valid email required');
+        contract.hasMinLen(password, 6, 'the password must contain at least 5 characters');
+        contract.passwordCompare(password, repeat_password, 'Password confirmation required');
+
+        if(!contract.isValid()) return res.status(400).send(contract.errors());
         const trx = await connection.transaction();
 
         const hash = await bcrypt.hash(password, 10)
@@ -68,6 +77,13 @@ class UserController {
         const user = await User.findOne({ where: { email } });
 
         if (!user) return res.status(400).send({ erro: "Usuario não encontrado" });
+
+        contract.hasMinLen(name, 5, 'the name must contain at least 5 characters');
+        contract.isEmail(email, 'Valid email required');
+        contract.hasMinLen(password, 6, 'the password must contain at least 5 characters');
+        contract.passwordCompare(password, repeat_password, 'Password confirmation required');
+
+        if(!contract.isValid()) return res.status(400).send(contract.errors());
 
         const trx = await connection.transaction();
 

@@ -1,6 +1,7 @@
 const Category = require('../models/Category');
 const slugify = require('slugify');
 const connection = require('../database/connection');
+const validator = require('../validate/validator');
 
 class CategoryController{
 
@@ -18,6 +19,12 @@ class CategoryController{
         var category = await Category.findOne({where: {title}});
 
         if(category) return res.status(405).send({erro: "Não é permitido ter mais de uma categoria com o mesmo nome"});
+
+        var contract = new validator();
+
+        contract.isRequired(title, 'Title is required')
+
+        if(!contract.isValid()) return res.status(400).send(contract.errors());
 
         const trx = await connection.transaction();
 
@@ -55,6 +62,12 @@ class CategoryController{
         if(!category) return res.status(400).send({erro: "Categoria não encontrada"});
 
         if(title == category.title) return res.status(405).send({erro: "Não é permitido duas categorias iguais"})
+
+        var contract = new validator();
+
+        contract.isRequired(title, 'Title is required')
+
+        if(!contract.isValid()) return res.status(400).send(contract.errors());
 
         const trx = await connection.transaction();
 

@@ -8,12 +8,10 @@ router.get("/category", CategoryController.index);
 
 router.get("/category/:id", CategoryController.show);
 
-router.use(adminsign_in);
+router.post("/category", adminsign_in, CategoryController.store);
 
-router.post("/category", CategoryController.store);
+router.put("/category", adminsign_in, CategoryController.update);
 
-router.put("/category", CategoryController.update);
-
-router.delete("/category", CategoryController.destroy);
+router.delete("/category", adminsign_in, CategoryController.destroy);
 
 module.exports = router;

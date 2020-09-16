@@ -1,10 +1,16 @@
 const Andress = require('../models/Andress');
 const connection = require('../database/connection');
+const validator = require('../validate/validator');
 
 class AndressController {
 
+    constructor(){
+        this.contract = new validator();
+    }
+    
 
     async store(req, res) {
+
 
         const user = req.userID
 
@@ -15,6 +21,17 @@ class AndressController {
         var andress = await Andress.findAll({ where: { user_id: user } });
 
         if (andress.length > 3) return res.status(405).send({ erro: "Só é permitido quatro endereços por usuario" });
+
+        var contract = new validator();
+
+        contract.hasMinLen(street, 1, 'Street is required');
+        contract.hasMinLen(district, 1, 'District is required');
+        contract.hasMinLen(city, 1, 'City is required');
+        contract.hasMinLen(state,  1,'State is required');
+        contract.hasMinLen(zipcode, 1, 'Zipcode is required');
+        contract.hasMinLen(number, 1, 'Number is required');
+
+        if(!contract.isValid()) return res.status(400).send(contract.errors());
 
         const trx = await connection.transaction();
 
@@ -52,6 +69,17 @@ class AndressController {
 
         if (!user) return res.status(400).send({ erro: "Usuario não encontrado" });
 
+        var contract = new validator();
+
+        contract.hasMinLen(street, 1, 'Street is required');
+        contract.hasMinLen(district, 1, 'District is required');
+        contract.hasMinLen(city, 1, 'City is required');
+        contract.hasMinLen(state,  1,'State is required');
+        contract.hasMinLen(zipcode, 1, 'Zipcode is required');
+        contract.hasMinLen(number, 1, 'Number is required');
+
+        if(!contract.isValid()) return res.status(400).send(contract.errors());
+        
         const andress = await Andress.findAll({where: {user_id: user}});
 
         const trx = await connection.transaction();
