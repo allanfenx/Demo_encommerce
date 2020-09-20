@@ -23,16 +23,18 @@ class UserController {
 
         const { name, email, password, role } = req.body;
 
-        var user = await User.findOne({where: {email}});
 
-        if(user) return res.status(405).send({erro: "Já existe um usuario cadastrado com este email"})
-
-        contract.hasMinLen(name, 5, 'the name must contain at least 5 characters');
+        contract.hasMinLen(name, 4, 'the name must contain at least 4 characters');
         contract.isEmail(email, 'Valid email required');
         contract.hasMinLen(password, 6, 'the password must contain at least 5 characters');
         contract.passwordCompare(password, repeat_password, 'Password confirmation required');
 
         if(!contract.isValid()) return res.status(400).send(contract.errors());
+
+        var user = await User.findOne({where: {email}});
+
+        if(user) return res.status(405).send({erro: "Já existe um usuario cadastrado com este email"})
+
         const trx = await connection.transaction();
 
         const hash = await bcrypt.hash(password, 10)

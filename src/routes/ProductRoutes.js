@@ -6,9 +6,9 @@ const router = express.Router();
 
 router.get("/product", ProductController.index);
 
-router.get("product/:id", ProductController.show);
+router.get("/product/:id", ProductController.show);
 
-router.use(adminsing_in);
+//router.use(adminsing_in);
 
 router.post("/product", ProductController.store);
 

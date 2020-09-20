@@ -9,6 +9,7 @@ const RecoverPassword = require('../models/RecoverPassword');
 const Category = require('../models/Category');
 const Product = require('../models/Product');
 const ProductImage = require('../models/ProductImage');
+const Order = require('../models/Order');
 
 const connection = new Sequelize(dbConfig);
 
@@ -21,6 +22,7 @@ RecoverPassword.init(connection);
 Category.init(connection);
 Product.init(connection);
 ProductImage.init(connection);
+Order.init(connection);
 
 
 Andress.associate(connection.models);
@@ -30,6 +32,6 @@ RecoverPassword.associate(connection.models);
 Category.associate(connection.models);
 Product.associate(connection.models);
 ProductImage.associate(connection.models);
-
+Order.associate(connection.models);
 
 module.exports = connection;

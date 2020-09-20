@@ -16,15 +16,15 @@ class CategoryController{
 
         const { title} = req.body;
 
-        var category = await Category.findOne({where: {title}});
-
-        if(category) return res.status(405).send({erro: "Não é permitido ter mais de uma categoria com o mesmo nome"});
-
         var contract = new validator();
 
         contract.isRequired(title, 'Title is required')
 
         if(!contract.isValid()) return res.status(400).send(contract.errors());
+
+        var category = await Category.findOne({where: {title}});
+
+        if(category) return res.status(405).send({erro: "Não é permitido ter mais de uma categoria com o mesmo nome"});
 
         const trx = await connection.transaction();
 
@@ -57,17 +57,17 @@ class CategoryController{
 
         const {title, id} = req.body;
 
-        var category = await Category.findByPk(id);
-
-        if(!category) return res.status(400).send({erro: "Categoria não encontrada"});
-
-        if(title == category.title) return res.status(405).send({erro: "Não é permitido duas categorias iguais"})
-
         var contract = new validator();
 
         contract.isRequired(title, 'Title is required')
 
         if(!contract.isValid()) return res.status(400).send(contract.errors());
+
+        var category = await Category.findByPk(id);
+
+        if(!category) return res.status(400).send({erro: "Categoria não encontrada"});
+
+        if(title == category.title) return res.status(405).send({erro: "Não é permitido duas categorias iguais"})
 
         const trx = await connection.transaction();
 

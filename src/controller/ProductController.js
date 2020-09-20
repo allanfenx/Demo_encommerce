@@ -17,9 +17,21 @@ class ProductController {
 
         const { title, name, description, price, stock } = req.body;
 
+        var contract = new validador();
+
+        contract.isRequired(title, 'Title is required');
+        contract.isRequired(name, 'Name is required');
+        contract.isRequired(description, 'Description is required');
+        contract.isRequired(price, 'Price is required');
+        contract.isRequired(stock, 'Stock is required');
+
+        if (!contract.isValid()) return res.status(400).send(contract.errors());
+
         const category = await Category.findOne({
-            where: { title },
-            include: { association: "categoryproduct", attributes: ["name"] }
+            where: {title},
+            include: [{
+                association: "categoryproduct",
+            }]
         });
 
         if (!category) return res.status(400).send({ erro: "Categoria não encontrada" })
@@ -27,15 +39,6 @@ class ProductController {
         var product = await Product.findOne({ where: { name } });
 
         if (product) return res.status(405).send({ erro: "Não é permitido produtos com o mesmo nome" });
-
-        var contract = new validador();
-
-        contract.isRequired(name, 'Name is required');
-        contract.isRequired(description, 'Description is required');
-        contract.isRequired(price, 'Price is required');
-        contract.isRequired(stock, 'Stock is required');
-
-        if (!contract.isValid()) return res.status(400).send(contract.errors());
 
         const trx = await connection.transaction();
 
@@ -75,6 +78,14 @@ class ProductController {
 
         const { id, title, description, price, stock } = req.body;
 
+        var contract = new validador();
+
+        contract.isRequired(description, 'Description is required');
+        contract.isRequired(price, 'Price is required');
+        contract.isRequired(stock, 'Stock is required');
+
+        if (!contract.isValid()) return res.status(400).send(contract.errors());
+
         const category = await Category.findOne({
             where: { title },
             include: { association: "categoryproduct", attributes: ["name"] }
@@ -84,15 +95,7 @@ class ProductController {
 
         var product = await Product.findByPk(id);
 
-        if (!product) return res.status(400).send({ erro: "Product not found" })
-
-        var contract = new validador();
-
-        contract.isRequired(description, 'Description is required');
-        contract.isRequired(price, 'Price is required');
-        contract.isRequired(stock, 'Stock is required');
-
-        if (!contract.isValid()) return res.status(400).send(contract.errors());
+        if (!product) return res.status(400).send({ erro: "Product not found" })   
 
         const trx = await connection.transaction();
 
