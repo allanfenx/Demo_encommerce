@@ -8,6 +8,7 @@ const UserRoutes = require('./routes/UserRoutes');
 const CategoryRoutes = require('./routes/CategoryRoutes');
 const ProductRoutes = require('./routes/ProductRoutes');
 const ProductImageRoutes = require('./routes/ProductImageRoutes');
+const OrderBuyRoutes = require('./routes/OrderBuyRoutes');
 
 require('./database/connection');
 
@@ -25,6 +26,7 @@ app.use("/", UserRoutes);
 app.use("/", CategoryRoutes);
 app.use("/", ProductRoutes);
 app.use("/", ProductImageRoutes);
+app.use("/", OrderBuyRoutes);
 
 app.listen(Port, ()=>{
     console.log(`Aplicação rodando na porta ${Port}`);

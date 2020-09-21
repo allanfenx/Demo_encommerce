@@ -35,6 +35,7 @@ class User extends Model {
         this.hasMany(models.Andress, { foreignKey: "user_id", as: "andress"});
         this.hasMany(models.UserImage, { foreignKey: "user_id", as: "userimage"});
         this.hasMany(models.RecoverPassword, {foreignKey: "user_id", as: "userecoverpassword"});
+        this.belongsToMany(models.Product, {foreignKey: "product_id", through: "OrderBuy", as: "product_user"});
     }
 }
 

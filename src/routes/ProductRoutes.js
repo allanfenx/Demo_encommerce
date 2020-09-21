@@ -8,12 +8,10 @@ router.get("/product", ProductController.index);
 
 router.get("/product/:id", ProductController.show);
 
-//router.use(adminsing_in);
+router.post("/product", adminsing_in, ProductController.store);
 
-router.post("/product", ProductController.store);
+router.put("/product", adminsing_in, ProductController.update);
 
-router.put("/product", ProductController.update);
-
-router.delete("/product", ProductController.destroy);
+router.delete("/product", adminsing_in, ProductController.destroy);
 
 module.exports = router;

@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Order', { 
+    await queryInterface.createTable('OrderBuy', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,7 +11,7 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.INTEGER,
-        references: {model: "Users", key: "id"},
+        references: { model: "Users", key: "id" },
         allowNull: false,
         onUpdate: "CASCADE",
         onDelete: "RESTRICT"
@@ -32,8 +32,12 @@ module.exports = {
         allowNull: false,
         defaultValue: "PENDING"
       },
-      valorShipping: {
+      valueShipping: {
         type: Sequelize.DECIMAL(7, 2),
+        allowNull: false
+      },
+      quantity: {
+        type: Sequelize.SMALLINT,
         allowNull: false
       },
       amount: {
@@ -41,11 +45,11 @@ module.exports = {
         allowNull: false
       }
     });
-    
+
   },
 
   down: async (queryInterface, Sequelize) => {
-     await queryInterface.dropTable('Order');
-     
+    await queryInterface.dropTable('OrderBuy');
+
   }
 };

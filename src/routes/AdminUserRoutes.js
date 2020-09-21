@@ -3,16 +3,15 @@ const UserController = require('../controller/AdminUserController');
 const adminsign_in = require('../config/midleware/adminsign_in');
 const router = express.Router();
 
-router.use(adminsign_in);
 
-router.get("/user", UserController.index);
+router.get("/user", adminsign_in, UserController.index);
 
-router.post("/user", UserController.store);
+router.post("/user", adminsign_in, UserController.store);
 
-router.get("/user/:id", UserController.show);
+router.get("/user/:id", adminsign_in, UserController.show);
 
-router.put("/user", UserController.update);
+router.put("/user", adminsign_in, UserController.update);
 
-router.delete("/user", UserController.destroy);
+router.delete("/user", adminsign_in, UserController.destroy);
 
 module.exports = router;

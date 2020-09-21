@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 
-class Order extends Model {
+class OrderBuy extends Model {
     static init(sequelize) {
         super.init({
             dateBuy: {
@@ -19,6 +19,12 @@ class Order extends Model {
                     isDecimal: true
                 }
             },
+            quantity: {
+                type: DataTypes.SMALLINT,
+                validate: {
+                    isInt: true
+                }
+            },
             amount: {
                 type: DataTypes.DECIMAL,
                 validate: {
@@ -30,12 +36,8 @@ class Order extends Model {
             freezeTableName: true
         })
     }
-
-    static associate(models) {
-        this.belongsTo(models.User, { foreignKey: "user_id", as: "buyuser" });
-        this.belongsTo(models.Product, {foreignKey: "product_id", as: "buyproduct"});
-    }
+    
 }
 
 
-module.exports = Order;
+module.exports = OrderBuy;

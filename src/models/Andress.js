@@ -45,7 +45,7 @@ class Andress extends Model {
             }
         }, {
             sequelize,
-            tableName: 'Andress'
+            freezeTableName: true
         })
     }
 
