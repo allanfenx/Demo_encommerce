@@ -61,7 +61,7 @@ class UserController {
             return res.status(400).send({ erro: "Ivalid password" });
 
         const token = jwt.sign({ id: user.id, role: user.role, name: user.name }, Auth.secret, {
-            expiresIn: 6000
+            expiresIn: 60000
         });
 
         user.password = undefined;

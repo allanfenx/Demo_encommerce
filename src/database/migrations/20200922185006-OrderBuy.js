@@ -16,19 +16,19 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "RESTRICT"
       },
-      product_id: {
+      carBuy_id: {
         type: Sequelize.INTEGER,
-        references: { model: "Product", key: "id" },
+        references: { model: "CarBuy", key: "id" },
         allowNull: false,
         onUpdate: "CASCADE",
-        onDelete: "RESTRICT",
+        onDelete: "RESTRICT"
       },
       dateBuy: {
         type: Sequelize.DATE,
         allowNull: false
       },
       status: {
-        type: Sequelize.ENUM('PENDING', 'APPROVED', 'SEND'),
+        type: Sequelize.ENUM('PENDING', 'APPROVED', 'CANCELED'),
         allowNull: false,
         defaultValue: "PENDING"
       },
@@ -36,7 +36,7 @@ module.exports = {
         type: Sequelize.DECIMAL(7, 2),
         allowNull: false
       },
-      quantity: {
+      quantityItems: {
         type: Sequelize.SMALLINT,
         allowNull: false
       },

@@ -48,7 +48,9 @@ class CategoryController{
 
         const {id} = req.params;
 
-        const category = await Category.findByPk(id);
+        const category = await Category.findByPk(id, { 
+            include: {association: "categoryproduct"}
+        });
 
         return res.send({category});
     }

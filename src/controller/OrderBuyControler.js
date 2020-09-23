@@ -1,42 +1,61 @@
 const OrderBuy = require('../models/OrderBuy');
 const Product = require('../models/Product');
 const connection = require('../database/connection');
+const User = require('../models/User');
+const CarBuy = require('../models/Carbuy');
 
 class OrderBuyController {
 
-    async oderBuy(req, res) {
+    async index(req, res) {
 
         const user = req.userID;
 
-        const { name, quantity } = req.body;
+        if (!user) return res.status(400).send({ erro: "User not found" });
 
-        var product = await Product.findOne({ where: { name } });
+        const order = await User.findByPk(user, {
+            attributes: { exclude: ["password"] },
+            include: [
+                { association: "user_order" }]
+        });
+
+        const carBuy = await CarBuy.findAll({include:[{association: "carbuy_order"}]})
+
+        return res.send({  carBuy });
+    }
+
+    async store(req, res) {
+
+        const user = req.userID; 
+
+        const {id, quantityProduct} = req.body;
 
         if(!user) return res.status(400).send({erro: "User not found"});
 
-        if(!product) return res.status(400).send({erro: "Product not found"});
+        var product = await Product.findByPk(id);
 
-        const amount = product.price * quantity;
+        const amount = quantityProduct * product.price;
 
-        const items = product.stock - quantity;
+        const quantityItems = quantityProduct;
 
         const trx = await connection.transaction();
 
         try {
             
-            const order = await OrderBuy.create({name, quantity, amount, user_id: user, product_id: product.id});
+            const carBuy = await CarBuy.create({products_id: product.id, product_price: product.price, quantityProduct});
 
-            product = await Product.update({stock: items}, {where: {name}});
+            const order = await OrderBuy.create({quantityItems, amount, carBuy_id: carBuy.id, user_id: user});
 
             await trx.commit();
 
-            return res.send({order});
+            return res.send(order);
+
         } catch (error) {
             
-            await trx.rollback();
+            await trx.rollback()
 
-            return res.status(400).send({erro: "Houve uma falha ao criar seu pedido"});
-        }
+            return res.status(400).send({erro: "Houve um erro ao cadastrar ordem de compra" + error});
+
+;        }
 
     }
 }
